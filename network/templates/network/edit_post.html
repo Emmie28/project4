@@ -1,0 +1,18 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+
+{% endblock %}
+
+{% block body %}
+<form method='post' id='edit_form' onsubmit="edit()">
+    {% csrf_token %}
+    <textarea  id="text" class="form-control"  name='post' placeholder="Posts" style="height: 250px;">
+        {{ post.post }}
+    </textarea>
+    <input type='submit' class="btn btn-sm btn-outline-primary" value='Edit'>
+
+</form>
+    
+{% endblock %}

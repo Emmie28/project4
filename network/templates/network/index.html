@@ -1,0 +1,70 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+
+{% endblock %}
+{% block body %}
+    {% for msg in messages %}
+        {{msg}}
+    {% endfor %}
+
+    <div id="new-post">
+        <h3>New Post</h3>
+        <form id='post_form' method="post">
+            {% csrf_token %}
+            <textarea id="text" class="form-control"  name='post' placeholder="Posts" style="height: 250px;"></textarea>
+            <br>
+            <input type='submit' value='post' class="btn btn-primary">
+        </form>
+    </div>
+
+    <div id="u_details" style="position: relative; left:40%;">
+        
+    </div>
+
+    <div id='user-posts'>
+
+    </div>
+
+    <div id='all-posts' name='ee'>
+        <h3>All Posts</h3>
+            {% for post in page_obj %}
+            <div style="border: .5px solid rgba(0, 0, 0, 0.075); padding: 20px; margin: 20px; border-radius: 10px;">
+                <h5><a href="{% url 'user_details' name=post.name %}">{{post.name}}</a></h5>
+                <p >{{post.post}} <br><span style="font-weight: 200; font-size: x-small;">{{post.date}}</span> </p>
+                {% if post.state == 'down' and post.liked_by == user.username %}
+                    <p><i id={{post.id}} onclick="like_unlike(this, '{{post.id}}')" class="fa fa-thumbs-down" style="cursor: pointer; color: #00F" onMouseOver="this.style.color='#0F0'" onMouseOut="this.style.color='#00F'">{{post.likes}}</i></p> 
+                {% else %}  
+                    <p><i id={{post.id}} onclick="like_unlike(this, '{{post.id}}')" class="fa fa-thumbs-up" style="cursor: pointer; color: #00F" onMouseOver="this.style.color='#0F0'" onMouseOut="this.style.color='#00F'">{{post.likes}}</i>
+                    </p>
+                {% endif %}
+                {% if post.name == user.username %}
+                    <a href='{% url "edit_post" id=post.id %}'>Edit_Post</a>
+                {% endif %}
+            </div>
+    
+            {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a class='pager' href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class='pager' href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    
+
+{% endblock %}

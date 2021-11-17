@@ -1,0 +1,62 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block script %}
+    <script>
+        src="{% static 'network/index.js' %}">
+    </script>
+    
+{% endblock %}
+
+{% block body %}
+
+    <div style="position: relative; left: 45%; margin-top: 20px;">
+        <h3 id='post_name'>{{name}}</h3>
+        <p id="user_following"> {{followers}} followers {{following}} following </p>
+        {% if name != user.username %}
+            {% if btn_value == 'follow'%}
+                <button id='ff_btn' class="btn btn-sm btn-outline-primary" onclick = 'follow("{{ name }}")')>
+                    follow
+                </button>
+            {% else %}
+                <button id='ff_btn' class="btn btn-sm btn-outline-primary" onclick = 'follow("{{ name }}")')>
+                    unfollow
+                </button>
+            {% endif %}
+        {% endif %}
+    
+    </div>
+    <hr>
+    <div>
+        {% for post in page_obj %}
+        <div id="content" style="border: .5px solid rgba(0, 0, 0, 0.075); padding: 20px; margin: 20px; border-radius: 10px;">
+            <h5><a href="#">{{post.name}}</a></h5>
+            {% if post.state == 'down' and post.liked_by == user.username %}
+                <p><i id={{post.id}} onclick="like_unlike(this, '{{post.id}}')" class="fa fa-thumbs-down" style="cursor: pointer; color: #00F" onMouseOver="this.style.color='#0F0'" onMouseOut="this.style.color='#00F'">{{post.likes}}</i></p> 
+            {% else %}  
+                <p><i id={{post.id}} onclick="like_unlike(this, '{{post.id}}')" class="fa fa-thumbs-up" style="cursor: pointer; color: #00F" onMouseOver="this.style.color='#0F0'" onMouseOut="this.style.color='#00F'">{{post.likes}}</i>
+                </p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a class='pager' href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class='pager' href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
+{% endblock %}
+
