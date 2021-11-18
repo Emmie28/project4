@@ -190,7 +190,7 @@ def like_unlike(request, id):
         return HttpResponse(status=204)
     if request.method == 'GET':
         item = Posts.objects.get(id=id)
-        print(item.likes)
+
         return JsonResponse(item.serialize())
 
 
